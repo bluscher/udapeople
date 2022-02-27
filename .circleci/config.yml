@@ -191,10 +191,10 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file frontend.yml \
-              #--tags project=udapeople  \
-              # --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              # --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-              exit 1
+              --tags project=udapeople  \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
+
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -213,19 +213,23 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      # Add ssh keys with fingerprint
-      # attach workspace
+      - add_ssh_keys:
+          fingerprints:
+            - "ac:22:15:c0:66:51:a7:8a:9e:36:ee:e9:33:c5:b4:cd"
       - run:
           name: Install dependencies
           command: |
-            # Your code here
-            exit 1
+            apk --no-cache add curl
+            apk add --no-cache --update ansible
+            apk add --no-cache --upgrade bash
+            pip3 install awscli
       - run:
           name: Configure server
           command: |
-            # Your code here
-            exit 1
-      # Here's where you will add some code to rollback on failure      
+            cd .circleci/ansible
+            curl -H "token: 4148b519-c531-4bf7-9974-f4d73b474107" --request GET https://api.memstash.io/values/backend_api >> inventory.txt
+            ansible-playbook configure-server.yml -i inventory.txt
+      - destroy-environment
 
   run-migrations:
     docker:
