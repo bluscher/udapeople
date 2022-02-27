@@ -53,7 +53,7 @@ jobs:
             - ~/project/frontend/node_modules
 
       - slack/notify:
-          channel: cicd
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
 
@@ -80,7 +80,7 @@ jobs:
             - ~/project/backend/node_modules
 
       - slack/notify:
-          channel: cicd
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
 
@@ -104,7 +104,7 @@ jobs:
             npm run test
 
       - slack/notify:
-          channel: cicd
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
                 
@@ -128,7 +128,7 @@ jobs:
             npm run test
 
       - slack/notify:
-          channel: cicd
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
             
