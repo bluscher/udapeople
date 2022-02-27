@@ -132,8 +132,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          key: v1-backend-build
       - run:
           name: Auditing Phase Backend
           command: |
