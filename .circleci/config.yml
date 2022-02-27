@@ -52,10 +52,7 @@ jobs:
           paths:
             - ~/project/frontend/node_modules
 
-      - slack/notify:
-          channel: ABCXYZ
-          event: fail
-          template: basic_fail_1
+      - slack-notification-fail
 
   build-backend:
     docker:
@@ -79,10 +76,7 @@ jobs:
           paths:
             - ~/project/backend/node_modules
 
-      - slack/notify:
-          channel: ABCXYZ
-          event: fail
-          template: basic_fail_1
+      - slack-notification-fail
 
   test-frontend:
     docker:
@@ -103,10 +97,7 @@ jobs:
             npm i
             npm run test
 
-      - slack/notify:
-          channel: ABCXYZ
-          event: fail
-          template: basic_fail_1
+      - slack-notification-fail
                 
   test-backend:
     docker:
@@ -127,10 +118,7 @@ jobs:
             cd backend
             npm run test
 
-      - slack/notify:
-          channel: ABCXYZ
-          event: fail
-          template: basic_fail_1
+      - slack-notification-fail
             
   scan-frontend:
     docker:
@@ -147,6 +135,8 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
+      - slack-notification-fail
+
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -161,6 +151,8 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
+
+      - slack-notification-fail
 
   deploy-infrastructure:
     docker:
