@@ -121,7 +121,7 @@ jobs:
     steps:
       #- checkout
       - run:
-          name: Audting Frontend
+          name: Audting Phase Frontend
           command: |
             cd frontend
             npm install
@@ -132,9 +132,11 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-     # - checkout
+      - checkout
+      - restore_cache:
+          key: v1-backend-build
       - run:
-          name: Auditing Backend
+          name: Auditing Phase Backend
           command: |
             cd backend
             npm audit --audit-level=critical
