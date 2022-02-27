@@ -53,7 +53,7 @@ jobs:
             - ~/project/frontend/node_modules
 
       - slack/notify:
-          channel: A035J4DDDH6
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
 
@@ -80,7 +80,7 @@ jobs:
             - ~/project/backend/node_modules
 
       - slack/notify:
-          channel: A035J4DDDH6
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
 
@@ -104,7 +104,7 @@ jobs:
             npm run test
 
       - slack/notify:
-          channel: A035J4DDDH6
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
                 
@@ -128,7 +128,7 @@ jobs:
             npm run test
 
       - slack/notify:
-          channel: A035J4DDDH6
+          channel: C034WK42C20
           event: fail
           template: basic_fail_1
             
@@ -331,12 +331,16 @@ cleanup:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context: slack-secrets
+      - build-backend:
+          context: slack-secrets
       - test-frontend:
           requires: [build-frontend]
+          context: slack-secrets
       - test-backend:
           requires: [build-backend]
+          context: slack-secrets
       - scan-backend:
           requires: [build-backend]
       - scan-frontend:
