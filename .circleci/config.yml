@@ -30,6 +30,25 @@ commands:
               exit 1
             fi
             
+slack-fail:
+    description: Send notification to Slack
+    steps:
+      - slack/notify:
+          channel: cicd
+          event: fail
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                      "type": "mrkdwn",
+                      "text": "Your job *$CIRCLE_JOB* has *faild* :octagonal_sign: (<$CIRCLE_BUILD_URL|build #$CIRCLE_BUILD_NUM>)\n\nrepo: $CIRCLE_REPOSITORY_URL\n\nbranch: $CIRCLE_BRANCH\n\ncommitter: $CIRCLE_USERNAME\n"
+                  }
+                }
+              ]
+            }
+
 jobs:
   build-frontend:
     docker:
@@ -52,7 +71,7 @@ jobs:
           paths:
             - ~/project/frontend/node_modules
 
-      - slack-notification-fail
+      - slack-fail
 
   build-backend:
     docker:
@@ -76,7 +95,7 @@ jobs:
           paths:
             - ~/project/backend/node_modules
 
-      - slack-notification-fail
+      - slack-fail
 
   test-frontend:
     docker:
@@ -97,7 +116,7 @@ jobs:
             npm i
             npm run test
 
-      - slack-notification-fail
+      - slack-fail
                 
   test-backend:
     docker:
@@ -118,7 +137,7 @@ jobs:
             cd backend
             npm run test
 
-      - slack-notification-fail
+      - slack-fail
             
   scan-frontend:
     docker:
@@ -135,7 +154,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
-      - slack-notification-fail
+      - slack-fail
 
   scan-backend:
     docker:
@@ -152,7 +171,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
-      - slack-notification-fail
+      - slack-fail
 
   deploy-infrastructure:
     docker:
