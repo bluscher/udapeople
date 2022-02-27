@@ -38,47 +38,33 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-
+      - restore_cache:
+          keys: [frontend-build]
       - run:
-          name: Install prerequsites
-          command: |            
-            sudo apt -y install jq tar gzip git curl
-      - run:
-          name: Frontend Build
+          name: Build front-end
           command: |
-            cd frontend
-            npm i
-            npm run build
+            # Your code here
+            exit 1
       - save_cache:
-          key: v1-frontend-build
-          paths:
-            - ~/project/frontend/node_modules
+          paths: [frontend/node_modules]
+          key: frontend-build
 
-      #- slack-notification-fail
   build-backend:
     docker:
       - image: circleci/node:13.8.0
-
     steps:
       - checkout
-
+      - restore_cache:
+          keys: [backend-build]
       - run:
-          name: Install prerequsites
+          name: Back-end build
           command: |
-            sudo apt -y install jq tar gzip git curl
-      - run:
-          name: Backend build
-          command: |
-            cd backend
-            npm i
-            npm run build
+             # Your code here
+             exit 1
       - save_cache:
-          key: v1-backend-build
-          paths:
-            - ~/project/backend/node_modules
+          paths: [backend/node_modules]
+          key: backend-build
 
-      #- slack-notification-fail
-      
   test-frontend:
     docker:
       # Docker image here
