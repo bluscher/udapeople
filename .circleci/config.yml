@@ -29,25 +29,6 @@ commands:
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
             fi
-            
-slack-fail:
-    description: Send notification to Slack
-    steps:
-      - slack/notify:
-          channel: cicd
-          event: fail
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                      "type": "mrkdwn",
-                      "text": "Your job *$CIRCLE_JOB* has *faild* :octagonal_sign: (<$CIRCLE_BUILD_URL|build #$CIRCLE_BUILD_NUM>)\n\nrepo: $CIRCLE_REPOSITORY_URL\n\nbranch: $CIRCLE_BRANCH\n\ncommitter: $CIRCLE_USERNAME\n"
-                  }
-                }
-              ]
-            }
 
 jobs:
   build-frontend:
@@ -71,7 +52,10 @@ jobs:
           paths:
             - ~/project/frontend/node_modules
 
-      - slack-fail
+      - slack/notify:
+          channel: cicd
+          event: fail
+          template: basic_fail_1
 
   build-backend:
     docker:
@@ -95,7 +79,10 @@ jobs:
           paths:
             - ~/project/backend/node_modules
 
-      - slack-fail
+      - slack/notify:
+          channel: cicd
+          event: fail
+          template: basic_fail_1
 
   test-frontend:
     docker:
@@ -116,7 +103,10 @@ jobs:
             npm i
             npm run test
 
-      - slack-fail
+      - slack/notify:
+          channel: cicd
+          event: fail
+          template: basic_fail_1
                 
   test-backend:
     docker:
@@ -137,7 +127,10 @@ jobs:
             cd backend
             npm run test
 
-      - slack-fail
+      - slack/notify:
+          channel: cicd
+          event: fail
+          template: basic_fail_1
             
   scan-frontend:
     docker:
@@ -154,8 +147,6 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
 
-      - slack-fail
-
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -170,8 +161,6 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-
-      - slack-fail
 
   deploy-infrastructure:
     docker:
@@ -342,11 +331,15 @@ cleanup:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context: slack
+      - build-backend:
+          context: slack
       - test-frontend:
+          context: slack
           requires: [build-frontend]
       - test-backend:
+          context: slack
           requires: [build-backend]
       - scan-backend:
           requires: [build-backend]
