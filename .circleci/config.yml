@@ -1,4 +1,6 @@
 version: 2.1
+orbs: 
+  slack: circleci/slack@4.8.3
 
 commands:
   destroy-environment:
@@ -50,7 +52,11 @@ jobs:
           paths:
             - ~/project/frontend/node_modules
 
-      #- slack-notification-fail
+      - slack/notify:
+          channel: ABCXYZ
+          event: fail
+          template: basic_fail_1
+
   build-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -73,7 +79,10 @@ jobs:
           paths:
             - ~/project/backend/node_modules
 
-      #- slack-notification-fail
+      - slack/notify:
+          channel: ABCXYZ
+          event: fail
+          template: basic_fail_1
 
   test-frontend:
     docker:
@@ -93,7 +102,11 @@ jobs:
             cd frontend
             npm i
             npm run test
-      #- slack-notification-fail
+
+      - slack/notify:
+          channel: ABCXYZ
+          event: fail
+          template: basic_fail_1
                 
   test-backend:
     docker:
@@ -113,7 +126,11 @@ jobs:
           command: |
             cd backend
             npm run test
-      #- slack-notification-fail
+
+      - slack/notify:
+          channel: ABCXYZ
+          event: fail
+          template: basic_fail_1
             
   scan-frontend:
     docker:
