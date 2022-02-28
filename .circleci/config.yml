@@ -185,15 +185,6 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
 
-            export BACKEND_URL=$(aws cloudformation describe-stacks \
-              --stack-name backend-"${CIRCLE_WORKFLOW_ID}" \
-              --query "Stacks[0].Outputs[?OutputKey=='BackendURL'].OutputValue" \
-              --no-paginate --output text)
-            echo $BACKEND_URL
-            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" \
-              --request PUT --data "${BACKEND_URL}" \
-              https://api.memstash.io/values/backendurl
-
       - run:
           name: Ensure front-end infrastructure exist
           working_directory: ./.circleci/files
@@ -211,7 +202,7 @@ jobs:
               --request GET https://api.memstash.io/values/backendurl)
             echo "${BACKEND_URL}" >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
-      - run: yum -y install tar gzip
+      
       - persist_to_workspace:
           root: .circleci/ansible
           paths:
