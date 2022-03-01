@@ -5,10 +5,10 @@ Parameters:
   ID:
     Description: Unique identifier.
     Type: String
-  KeyName:
-    Description: Name of an existing EC2 KeyPair to enable SSH access to the ECS instances
-    Type: AWS::EC2::KeyPair::KeyName
-    Default: udapeople
+ # KeyName:
+ #   Description: Name of an existing EC2 KeyPair to enable SSH access to the ECS instances
+ #   Type: AWS::EC2::KeyPair::KeyName
+ #   Default: udapeople
 
 Resources:
   InstanceSecurityGroup:
@@ -32,7 +32,8 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: !Ref KeyName # If you use another key pair name, you should change this value to match.
+      KeyName: udapeople  
+    #  KeyName: !Ref KeyName # If you use another key pair name, you should change this value to match.
       ImageId: ami-0892d3c7ee96c0bf7 
       Tags:
         - Key: Name
