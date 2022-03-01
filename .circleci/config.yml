@@ -183,7 +183,7 @@ jobs:
               --template-file backend.yml \
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
          #     --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7} KeyName=udapeople"  
 
       - run:
@@ -194,7 +194,7 @@ jobs:
               --template-file frontend.yml \
               --tags project=udapeople  \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
          #     --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7} KeyName=udapeople"  
 
       - run:
