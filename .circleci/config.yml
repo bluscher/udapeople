@@ -200,19 +200,20 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            export BACKEND_API_URL=$(aws ec2 describe-instances \
+            export BACKEND_IP=$(aws ec2 describe-instances \
               --region us-west-2 --query "Reservations[*].Instances[*].PublicIpAddress" \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)  
-            echo ${BACKEND_API_URL}
-            curl https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/ip \
-             -d ${BACKEND_API_URL}
-            echo "${BACKEND_API_URL}" >> .circleci/ansible/inventory.txt
+
+            echo "${BACKEND_IP}" >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
+
+            curl https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/backend_ip \
+             -d ${BACKEND_IP}
       
       - persist_to_workspace:
-          root: .circleci/ansible
+          root: ~/
           paths:
-            - inventory.txt
+            - project/.circleci/ansible/inventory.txt
       
       # Here's where you will add some code to rollback on failure 
       - destroy-environment
@@ -225,6 +226,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "60:80:c2:0b:76:8a:cb:a5:21:cf:d7:d6:a5:cb:e2:65"
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -232,10 +235,24 @@ jobs:
             apk add --no-cache --update ansible
             apk add --no-cache --upgrade bash
             pip3 install awscli
+            cat .circleci/ansible/inventory.txt
       - run:
           name: Configure server
           command: |
+            echo ENVIRONMENT=production > "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
+            echo NODE_ENV=production >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
+            
       - destroy-environment
 
   run-migrations:
