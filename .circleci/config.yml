@@ -28,7 +28,7 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = 1
-            export SUCCESS=$(curl https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            export SUCCESS=$(curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -293,9 +293,9 @@ jobs:
            cd backend
             if grep "has been executed successfully" migrations_code.txt
             then
-              curl https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
               else
-              curl https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
+              curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi   
       - revert-migrations
       - destroy-environment
