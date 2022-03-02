@@ -260,6 +260,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          key: backend-build
       - run:
           name: Install dependencies
           command: |
@@ -294,13 +296,13 @@ jobs:
               else
               curl https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '0'
             fi   
-    #  - revert-migration
+      - revert-migration
       - destroy-environment
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
       - attach_workspace:
