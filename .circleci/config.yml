@@ -413,12 +413,9 @@ jobs:
             apk add --update npm
             pip3 install awscli
       - run:
-          name: Get backend url
-          command: |
-            BACKEND_API_URL=$(curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/backend_ip)
-      - run:
           name: Backend smoke test.
           command: |
+            BACKEND_API_URL=$(curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/backend_ip)
             API_URL="http://${BACKEND_API_URL}:3030"
             echo "${API_URL}"            
             curl ${API_URL}/api/status
