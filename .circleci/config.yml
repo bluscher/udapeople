@@ -396,8 +396,8 @@ jobs:
             ansible-playbook \
               -i ../../.circleci/ansible/inventory.txt \
               ../../.circleci/ansible/deploy-backend.yml
-      - revert-migration
-      - destroy-environment
+      - revert-migrations
+      - destroy-environment 
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
