@@ -301,20 +301,21 @@ jobs:
 
   deploy-frontend:
     docker:
-   #   - image: amazon/aws-cli
-       - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
+    #   - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
           key: frontend-build
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
+            command: yum install -y tar gzip
             cd frontend
             sudo npm install webpack-dev-server -g
-            sudo npm install
+            sudo npm install   
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
