@@ -418,7 +418,7 @@ jobs:
             BACKEND_API_URL=$(curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/backend_ip)
             API_URL="http://${BACKEND_API_URL}:3030"
             echo "${API_URL}"            
-            curl ${API_URL}/api/status
+            curl -k ${API_URL}/api/status
       - run:
           name: Frontend smoke test.
           command: |
