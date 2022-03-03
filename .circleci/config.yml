@@ -408,21 +408,33 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk --no-cache add curl
+            apk add --no-cache --upgrade bash
+            apk add --update npm
+            pip3 install awscli
       - run:
           name: Get backend url
           command: |
-            # your code here
+            BACKEND_API_URL=$(curl -k https://kvdb.io/AiLVPwtUCZNCY13CiAh9LB/backend_ip)
       - run:
           name: Backend smoke test.
           command: |
-            # your code here
+            API_URL="http://${BACKEND_API_URL}:3030"
+            echo "${API_URL}"            
+            curl ${API_URL}/api/status
       - run:
           name: Frontend smoke test.
           command: |
-            # your code here
+           URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+              then
+                return 0
+              else
+                return 1
+            fi
       # Here's where you will add some code to rollback on failure  
-
+      - revert-migrations
+      - destroy-environment 
   cloudfront-update:
     docker:
        - image: amazon/aws-cli
@@ -488,8 +500,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-      #- smoke-test:
-       #   requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       #- cloudfront-update:
       #    requires: [smoke-test]
       #- cleanup:
